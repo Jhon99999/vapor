@@ -118,6 +118,13 @@ do {
         }
     }
 
+    router.get("client", "httpsgoogle") { req -> Future<String> in
+        return try req.make(Client.self).get("https://google.com/robots.txt").flatMap(to: Data.self) { res in
+            return res.http.body.makeData(max: 2048)
+        }.map(to: String.self) { data in
+            return String(data: data, encoding: .utf8) ?? "n/a"
+        }
+    }
 
     router.get("client", "httpbin") { req -> Future<String> in
         return try req.make(Client.self).get("http://httpbin.org/anything").flatMap(to: Data.self) { res in
